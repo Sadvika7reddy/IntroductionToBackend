@@ -1,53 +1,62 @@
-// console.log("Hello World")
-// let Product=(num1,num2)=>{
-//     return num1*num2
-// }
 
-// console.log(Product(4,5))
-// const student={
-//     name:"sadvika",
-//     age:23,
-//     marks:53,
-//     eligible(){
-//         console.log(this.marks)
-//     }
-// }
-// student.eligible()
-// let fruits=["apple","oranges","","mango","","lemon"]
-// let result=fruits.map((fruit)=>{
-//     if(fruit==""){
-//         fruit="empty string"
-//     }
-//     else{
-//         fruit=fruit
-//     }
-//     return fruit
-// })
-// console.log(result)
-// async function Result(){
-//     console.log('a');
-
-//     console.log('b');
-//     let msg1=await new Promise((resolve,reject)=>{
-//         setTimeout(() => resolve('c'), 3000)
-    
-//     })
-//     console.log(msg1)
-//     let msg2=await new Promise((resolve,reject)=>{
-//         setTimeout(() => resolve('d'), 0)
-    
-//     })
-    
-//     console.log(msg2)
-//     console.log('e');  
-// }
-// Result();
 const http=require('http')
-let name="sadvika"
+const fs=require('fs')
+const path=require('path')
 const result=http.createServer((req,res)=>{
-   console.log(name)
+   const url=req.url
+   const method=req.method
+    if(url==="/"){
+      
+      fs.readFile('message.txt',{encoding:"utf-8"},(err,data)=>{
+          if(err){
+            console.log(err)
+          }
+          const date=data
+          res.write('<html>')
+          res.write('<head><title>First Page</title></head>')
+          
+          res.write(`<body><form action="/message" method="POST"><input type="text" name="message"/><button type="submit">send</button></form></body>`)
+          res.write(`<body>${data}</body>`)
+          res.write('</html>')
+          return res.end();
+      })
+      
+    }
+    else if(url==="/message"&& method==="POST"){
+      const body=[]
+      req.on('data',(chunk)=>{
+         console.log(chunk)
+         body.push(chunk)
+      })
+      return req.on('end',()=>{
+         const parseData=Buffer.concat(body).toString();
+         console.log(parseData)
+         const message=parseData.split('=')[1]
+         fs.writeFile('message.txt',message,(err)=>{
+            if(err){
+               console.loh(err)
+            }
+            res.statusCode=302
+            res.setHeader("Location",'/')
+            
+            return res.end()
+         })
+         
+      })
+      
+      
+    }
+    else{
+      res.setHeader('Content-Type','text/html')
+    res.write('<html>')
+    res.write('<head><title>First day</title></head>')
+    res.write('<body><h1>hellooo</h1></body>')
+    res.end()
+    }
+    
+
 })
-result.listen(4000)
+result.listen(8000)
 
 
 
