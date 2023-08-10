@@ -1,8 +1,9 @@
 const express=require('express')
-
+const path=require('path')
 const router=express.Router()
-
+const rootDir=require("../util/path")
 router.get('/',(req,res,next)=>{
-    res.send("<h1>Welcome to shop</h1>")
+    res.sendFile(path.join(rootDir,"view","shop.html"))
 })
+
 module.exports = router

@@ -2,22 +2,23 @@
 const bodyParser=require('body-parser')
 
 const express=require('express')
-
+const path=require('path')
 const adminRouter=require('./routes/admin')
 const shopRouter=require('./routes/shop')
-
+const contactRouter=require('./routes/contact')
 const app=express()
 
 app.use(bodyParser.urlencoded({extended:true}))
 
-
+app.use(express.static(path.join(__dirname,"public")))
 app.use('/admin',adminRouter)
-app.use('/shop',shopRouter)
+app.use(shopRouter)
+app.use(contactRouter)
 
 app.use((req,res,next)=>{
-    res.status(404).send("<h1>Page not found</h1>")
+    res.status(404).sendFile(path.join(__dirname,"view","error.html"))
 })
 
    
-app.listen(4000)
+app.listen(8000)
 
